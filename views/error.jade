@@ -1,0 +1,117 @@
+extends layout
+
+append head
+  style(type="text/css").
+    body {
+      padding-top: 60px;
+      padding-bottom: 40px;
+    }
+    .sidebar-nav {
+      padding: 9px 0;
+    }
+    
+    .error-page {
+      margin: 0 7.5%;
+      padding: 4% 0;
+    }
+    
+    .error-page pre {
+      font-size: 10px;
+    }
+    
+    .error-page table {
+      border: 1px solid #999;
+      border-collapse: collapse;
+    }
+    
+    .error-page td, 
+    .error-page th {
+      border: 1px solid #999;
+      padding: 8px;
+      text-align: left;
+      align: left;
+    }
+
+block body
+  body.white
+    .error-page
+      .row-fluid
+        .span4
+        .span4
+          -if (status)
+            h3= status
+          .alert.alert-error
+            strong!= text
+
+      if (app.enabled('debug'))
+        .row-fluid
+          .span2
+          .span8
+            h3 Stack Track
+            pre= err.stack
+            br
+            h3 Application
+            br
+            table.table.table-striped.table-bordered
+              thead
+                each val, key in dependancies
+                  if (typeof val == 'string')
+                    tr
+                      th= key
+                      th= val
+                tr
+                  th repo
+                  th: a(href=dependancies.repository.url)= dependancies.repository.url
+                tr
+                  th git sha
+                  th: a(href="https://github.com/haxby/frontend/commit/"+app.set('git sha'), target="_blank")= app.set('git sha')
+            br
+            h3 dependancies
+            br
+            table.table.table-striped.table-bordered
+              thead
+                each val, key in dependancies.dependencies
+                  if (typeof val == 'string')
+                    tr
+                      th: a(href="https://npmjs.org/package/"+key, target="_blank")= key
+                      th= val
+            br
+            h3 Memory
+            br
+            table.table.table-striped.table-bordered
+              thead
+                tr
+                  th Type
+                  th Value
+              tbody
+                - var mem = process.memoryUsage()
+                - each v, k in mem
+                  tr
+                    td= k
+                    td= parseInt(v/1024/1024) + ' mb'
+            br
+            h3 Node Version
+            br
+            table.table.table-striped.table-bordered
+              thead
+                tr
+                  th Type
+                  th Value
+              tbody
+                 - each v, k in process.versions
+                  tr
+                    td= k
+                    td= v
+            br
+            h3 Environment
+            br
+            table.table.table-striped.table-bordered
+              thead
+                tr
+                  th Type
+                  th Value
+              tbody
+                 - each v, k in process.env
+                  tr
+                    td= k
+                    td: span(style="display:inline-block;width:400px;white-space: nowrap;overflow:hidden;text-overflow: ellipsis;")= v
