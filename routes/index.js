@@ -19,10 +19,10 @@ module.exports = function(app){
   
   
   app.post('/form/:name', function(req, res){
-    var db = getStore(req.params.name);
-    db.set(Date.now(), req.body);
-    res.send({ok: true});
-  });
+        var db = getStore(req.params.name);
+        db.set(Date.now(), req.body);
+        res.send({ok: true});
+    });
   
   
   function getStore(name){
