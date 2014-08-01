@@ -1,4 +1,5 @@
-var store = require('json-store')
+var fs = require('fs')
+  , store = require('json-store')
   , stores = {};
 
 module.exports = function(app){
@@ -17,7 +18,18 @@ module.exports = function(app){
     })
   });
   
-  
+
+  app.get('/form/:name', function(req, res){
+    var name = req.params.name;
+    var file = app.set('root') + '/data/' + name + '.json';
+    fs.exists(file, function(exists){
+
+        if(!exists) return res.send({error: true});
+        var data = require(file);
+        res.send(data);
+    })
+  });
+
   app.post('/form/:name', function(req, res){
         var db = getStore(req.params.name);
         db.set(Date.now(), req.body);

@@ -3,8 +3,26 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title></title>
+    <script type="text/javascript" src="/js/jquery-2.1.0.js"></script>
 </head>
 <body>
  <h1>simple</h1>
+ <button id="button">submit</button>
+ <script>
+     $(function(){
+         $('#button').on('click', function(){
+
+             $.post('/form/brand_new',{
+                 first: 'Nate',
+                 last: 'White',
+                 github: 'nw',
+                 email: '_@nw.is',
+                 twitter: '_nw_'
+             }, function(resp){
+                 console.log(resp);
+             });
+         });
+     });
+ </script>
 </body>
 </html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/js/jquery-2.1.0.js"></script>
+</head>
+<body>
+<input id="db" type="text" name="data" placeholder="Database" />
+<button id="button">get data</button>
+<table class="table">
+    <thead>
+        <tr id="result_headers">
+
+        </tr>
+    </thead>
+    <tbody id="results">
+
+    </tbody>
+</table>
+<script>
+    $(function(){
+        $('#button').on('click', function(){
+            $('body').css("background", "red");
+            setTimeout(function(){
+                var db = $('#db').val();
+                $.get('/form/'+db, function(resp){
+                    console.log(resp);
+                    if(!resp || resp.error){
+                        return alert("Error with db (" + db + ")");
+                    } else {
+                        process(resp);
+                        $('body').css("background", "");
+                    }
+                });
+            }, 1000);
+        });
+    });
+
+    function process(data){
+        var ts; // timestamp
+        var key; // used for keys in a object
+        var props; // individual object properties
+        var header = $("#result_headers").empty();
+        var rows = $("#results").empty();
+
+        for(ts in data){
+            if(!props){
+                props = [];
+
+                $("<th>Timestamp</th>").appendTo(header);
+
+                for(key in data[ts]){
+                    if(key !== 'submit'){
+                        props.push(key);
+                        $("<th>"+ key +"</th>").appendTo(header);
+                    }
+                }
+            }
+
+            var row = $("<tr />");
+            $("<td>"+ ts + "</td>").appendTo(row);
+
+            props.forEach(function(prop){
+                $("<td>"+ data[ts][prop] + "</td>").appendTo(row);
+            });
+
+            rows.append(row);
+        }
+    }
+</script>
+</body>
+</html>
